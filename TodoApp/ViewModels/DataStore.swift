@@ -20,6 +20,7 @@ class DataStore: ObservableObject {
     
     init(){
         print(FileManager.docDirURL.path)
+        addSubscription()
         if FileManager().docExist(named: fileName){
             loadTodo()
         }
