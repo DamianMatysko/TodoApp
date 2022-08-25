@@ -10,7 +10,7 @@ import CoreData
 
 struct TodoView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
-    @EnvironmentObject var dataStore: DataStore
+    @EnvironmentObject var dataStore:DataStore
     @State private var modalType: ModalType? = nil
     
     var body: some View {
@@ -26,7 +26,7 @@ struct TodoView: View {
                             .foregroundColor(todo.completed ? .green : Color(.label))
                     })
                 }
-                .onDelete(perform: dataStore.deleteTodo)
+                .onDelete(perform: dataStore.daleteTodo.send)
             }
             .listStyle(InsetGroupedListStyle())
             .toolbar{

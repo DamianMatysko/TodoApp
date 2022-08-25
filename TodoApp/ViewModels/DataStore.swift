@@ -6,10 +6,17 @@
 //
 
 import Foundation
+import Combine
 
 class DataStore: ObservableObject {
     @Published var todos:[Todo] = []
     @Published var appError: ErrorType? = nil
+    
+    var addTodo = PassthroughSubject<Todo, Never>()
+    var updateTodo = PassthroughSubject<Todo, Never>()
+    var daleteTodo = PassthroughSubject<IndexSet, Never>()
+    
+    var subscriptions = Set<AnyCancellable>()
     
     init(){
         print(FileManager.docDirURL.path)
@@ -19,24 +26,50 @@ class DataStore: ObservableObject {
         
     }
     
-    func addTodo(_ todo: Todo) {
-        todos.append(todo)
-        saveTodos()
+    func addSubscription(){
+        addTodo
+            .sink{ [unowned self] todo in
+                todos.append(todo)
+                saveTodos()
+            }
+            .store(in: &subscriptions)
+        
+        updateTodo
+            .sink { [unowned self] todo in
+                guard let index = todos.firstIndex(where: {
+                    $0.id == todo.id }) else {return}
+                todos[index] = todo
+                saveTodos()
+            }
+            .store(in: &subscriptions)
+        
+        daleteTodo
+            .sink{ [unowned self] indexSet in
+                todos.remove(atOffsets: indexSet)
+                saveTodos()
+            }
+            .store(in: &subscriptions)
     }
     
-    func updateTodo(_ todo: Todo) {
-        guard let index = todos.firstIndex(where: { $0.id == todo.id}) else {return}
-        todos[index] = todo
-        saveTodos()
-    }
     
-    func deleteTodo(at indexSet: IndexSet){
-        todos.remove(atOffsets: indexSet)
-        saveTodos()
-    }
+//    func addTodo(_ todo: Todo) {
+//        todos.append(todo)
+//        saveTodos()
+//    }
+//
+//    func updateTodo(_ todo: Todo) {
+//        guard let index = todos.firstIndex(where: { $0.id == todo.id}) else {return}
+//        todos[index] = todo
+//        saveTodos()
+//    }
+//
+//    func deleteTodo(at indexSet: IndexSet){
+//        todos.remove(atOffsets: indexSet)
+//        saveTodos()
+//    }
     
     func loadTodo(){
-//        todos = Todo.sampleData
+        //        todos = Todo.sampleData
         FileManager().readDocument(docName: fileName){ (result) in
             switch result{
             case .success(let data):
@@ -44,11 +77,11 @@ class DataStore: ObservableObject {
                 do {
                     todos = try decoder.decode([Todo].self, from: data)
                 } catch {
-                   // print(TodoError.decordingError.localizedDescription)
+                    // print(TodoError.decordingError.localizedDescription)
                     appError = ErrorType(error: .decordingError)
                 }
             case .failure(let error):
-               // print(error.localizedDescription)
+                // print(error.localizedDescription)
                 appError = ErrorType(error: error)
             }
             
@@ -69,7 +102,7 @@ class DataStore: ObservableObject {
                 }
             }
         } catch {
-           // print(TodoError.encordingError.localizedDescription)
+            // print(TodoError.encordingError.localizedDescription)
             appError = ErrorType(error: .encordingError)
         }
     }

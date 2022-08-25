@@ -30,13 +30,13 @@ struct TodoFormView: View {
 extension TodoFormView{
     func updateTodo() {
         let todo = Todo(id: formVM.id!, name: formVM.name, completed: formVM.completed)
-        dataStore.updateTodo(todo)
+        dataStore.updateTodo.send(todo)
         presentationMode.wrappedValue.dismiss()
     }
     
     func addTodo(){
         let todo = Todo(name: formVM.name)
-        dataStore.addTodo(todo)
+        dataStore.addTodo.send(todo)
         presentationMode.wrappedValue.dismiss()
     }
     
