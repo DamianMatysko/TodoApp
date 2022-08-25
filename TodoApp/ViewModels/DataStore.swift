@@ -9,6 +9,7 @@ import Foundation
 
 class DataStore: ObservableObject {
     @Published var todos:[Todo] = []
+    @Published var appError: ErrorType? = nil
     
     init(){
         print(FileManager.docDirURL.path)
@@ -43,10 +44,12 @@ class DataStore: ObservableObject {
                 do {
                     todos = try decoder.decode([Todo].self, from: data)
                 } catch {
-                    print(error.localizedDescription)
+                   // print(TodoError.decordingError.localizedDescription)
+                    appError = ErrorType(error: .decordingError)
                 }
             case .failure(let error):
-                print(error.localizedDescription)
+               // print(error.localizedDescription)
+                appError = ErrorType(error: error)
             }
             
         }
@@ -60,11 +63,14 @@ class DataStore: ObservableObject {
             let jsonString = String(decoding: data, as: UTF8.self)
             FileManager().saveDocument(contents: jsonString, docName: fileName){ (error) in
                 if let error = error {
-                    print(error.localizedDescription)
+                    //print(error.localizedDescription)
+                    
+                    appError = ErrorType(error: error)
                 }
             }
         } catch {
-            print(error.localizedDescription)
+           // print(TodoError.encordingError.localizedDescription)
+            appError = ErrorType(error: .encordingError)
         }
     }
 }

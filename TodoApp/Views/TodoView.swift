@@ -45,6 +45,9 @@ struct TodoView: View {
             }
         }
         .sheet(item: $modalType) { $0 }
+        .alert(item: $dataStore.appError){ appError in
+            Alert(title: Text("Oh no"), message: Text(appError.error.localizedDescription))
+        }
     }
 }
 
