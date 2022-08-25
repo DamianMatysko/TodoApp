@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D30252028B752E900E03B50 /* TodoFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D30251F28B752E900E03B50 /* TodoFormViewModel.swift */; };
+		3D30252228B7543700E03B50 /* TodoFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D30252128B7543700E03B50 /* TodoFormView.swift */; };
+		3D30252428B75A2E00E03B50 /* ModalType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D30252328B75A2E00E03B50 /* ModalType.swift */; };
 		3D67B22128B6456C00A83D31 /* TodoAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D67B22028B6456C00A83D31 /* TodoAppApp.swift */; };
 		3D67B22328B6456C00A83D31 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D67B22228B6456C00A83D31 /* ContentView.swift */; };
 		3D67B22528B6456E00A83D31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D67B22428B6456E00A83D31 /* Assets.xcassets */; };
@@ -39,6 +42,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3D30251F28B752E900E03B50 /* TodoFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFormViewModel.swift; sourceTree = "<group>"; };
+		3D30252128B7543700E03B50 /* TodoFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFormView.swift; sourceTree = "<group>"; };
+		3D30252328B75A2E00E03B50 /* ModalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalType.swift; sourceTree = "<group>"; };
 		3D67B21D28B6456C00A83D31 /* TodoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D67B22028B6456C00A83D31 /* TodoAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoAppApp.swift; sourceTree = "<group>"; };
 		3D67B22228B6456C00A83D31 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -81,6 +87,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3D30252528B7711A00E03B50 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3D67B25328B73A9E00A83D31 /* TodoView.swift */,
+				3D30252128B7543700E03B50 /* TodoFormView.swift */,
+				3D67B22228B6456C00A83D31 /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3D30252628B7714500E03B50 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				3D67B25128B7379000A83D31 /* DataStore.swift */,
+				3D30251F28B752E900E03B50 /* TodoFormViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		3D30252728B7715900E03B50 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3D67B24F28B7353A00A83D31 /* Todo.swift */,
+				3D30252328B75A2E00E03B50 /* ModalType.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		3D67B21428B6456C00A83D31 = {
 			isa = PBXGroup;
 			children = (
@@ -104,15 +138,14 @@
 		3D67B21F28B6456C00A83D31 /* TodoApp */ = {
 			isa = PBXGroup;
 			children = (
+				3D30252728B7715900E03B50 /* Models */,
+				3D30252628B7714500E03B50 /* ViewModels */,
+				3D30252528B7711A00E03B50 /* Views */,
 				3D67B22028B6456C00A83D31 /* TodoAppApp.swift */,
-				3D67B22228B6456C00A83D31 /* ContentView.swift */,
 				3D67B22428B6456E00A83D31 /* Assets.xcassets */,
 				3D67B22928B6456E00A83D31 /* Persistence.swift */,
 				3D67B22B28B6456E00A83D31 /* TodoApp.xcdatamodeld */,
 				3D67B22628B6456E00A83D31 /* Preview Content */,
-				3D67B24F28B7353A00A83D31 /* Todo.swift */,
-				3D67B25128B7379000A83D31 /* DataStore.swift */,
-				3D67B25328B73A9E00A83D31 /* TodoView.swift */,
 			);
 			path = TodoApp;
 			sourceTree = "<group>";
@@ -272,13 +305,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D30252028B752E900E03B50 /* TodoFormViewModel.swift in Sources */,
 				3D67B22A28B6456E00A83D31 /* Persistence.swift in Sources */,
 				3D67B25228B7379000A83D31 /* DataStore.swift in Sources */,
 				3D67B25428B73A9E00A83D31 /* TodoView.swift in Sources */,
 				3D67B22328B6456C00A83D31 /* ContentView.swift in Sources */,
+				3D30252428B75A2E00E03B50 /* ModalType.swift in Sources */,
 				3D67B22128B6456C00A83D31 /* TodoAppApp.swift in Sources */,
 				3D67B22D28B6456E00A83D31 /* TodoApp.xcdatamodeld in Sources */,
 				3D67B25028B7353A00A83D31 /* Todo.swift in Sources */,
+				3D30252228B7543700E03B50 /* TodoFormView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
