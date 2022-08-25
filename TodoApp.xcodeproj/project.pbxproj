@@ -10,6 +10,7 @@
 		3D30252028B752E900E03B50 /* TodoFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D30251F28B752E900E03B50 /* TodoFormViewModel.swift */; };
 		3D30252228B7543700E03B50 /* TodoFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D30252128B7543700E03B50 /* TodoFormView.swift */; };
 		3D30252428B75A2E00E03B50 /* ModalType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D30252328B75A2E00E03B50 /* ModalType.swift */; };
+		3D30252A28B7748100E03B50 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D30252928B7748100E03B50 /* FileManager.swift */; };
 		3D67B22128B6456C00A83D31 /* TodoAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D67B22028B6456C00A83D31 /* TodoAppApp.swift */; };
 		3D67B22328B6456C00A83D31 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D67B22228B6456C00A83D31 /* ContentView.swift */; };
 		3D67B22528B6456E00A83D31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D67B22428B6456E00A83D31 /* Assets.xcassets */; };
@@ -45,6 +46,7 @@
 		3D30251F28B752E900E03B50 /* TodoFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFormViewModel.swift; sourceTree = "<group>"; };
 		3D30252128B7543700E03B50 /* TodoFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFormView.swift; sourceTree = "<group>"; };
 		3D30252328B75A2E00E03B50 /* ModalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalType.swift; sourceTree = "<group>"; };
+		3D30252928B7748100E03B50 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		3D67B21D28B6456C00A83D31 /* TodoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D67B22028B6456C00A83D31 /* TodoAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoAppApp.swift; sourceTree = "<group>"; };
 		3D67B22228B6456C00A83D31 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -115,6 +117,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		3D30252828B773F800E03B50 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3D30252928B7748100E03B50 /* FileManager.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		3D67B21428B6456C00A83D31 = {
 			isa = PBXGroup;
 			children = (
@@ -138,6 +148,7 @@
 		3D67B21F28B6456C00A83D31 /* TodoApp */ = {
 			isa = PBXGroup;
 			children = (
+				3D30252828B773F800E03B50 /* Extensions */,
 				3D30252728B7715900E03B50 /* Models */,
 				3D30252628B7714500E03B50 /* ViewModels */,
 				3D30252528B7711A00E03B50 /* Views */,
@@ -312,6 +323,7 @@
 				3D67B22328B6456C00A83D31 /* ContentView.swift in Sources */,
 				3D30252428B75A2E00E03B50 /* ModalType.swift in Sources */,
 				3D67B22128B6456C00A83D31 /* TodoAppApp.swift in Sources */,
+				3D30252A28B7748100E03B50 /* FileManager.swift in Sources */,
 				3D67B22D28B6456E00A83D31 /* TodoApp.xcdatamodeld in Sources */,
 				3D67B25028B7353A00A83D31 /* Todo.swift in Sources */,
 				3D30252228B7543700E03B50 /* TodoFormView.swift in Sources */,
