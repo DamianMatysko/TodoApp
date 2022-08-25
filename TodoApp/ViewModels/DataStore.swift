@@ -15,23 +15,45 @@ class DataStore: ObservableObject {
     var addTodo = PassthroughSubject<Todo, Never>()
     var updateTodo = PassthroughSubject<Todo, Never>()
     var daleteTodo = PassthroughSubject<IndexSet, Never>()
-    
+    var loadTodos = Just(FileManager.docDirURL.appendingPathComponent(fileName))
     var subscriptions = Set<AnyCancellable>()
     
     init(){
         print(FileManager.docDirURL.path)
         addSubscription()
-        if FileManager().docExist(named: fileName){
-            loadTodo()
-        }
-        
-    }
+}
     
     func addSubscription(){
+        loadTodos
+            .filter{FileManager.default.fileExists(atPath: $0.path)}
+            .tryMap{ url in
+                try Data(contentsOf: url)
+            }
+            .decode(type: [Todo].self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink { [unowned self] (completion) in
+                switch completion {
+                case .finished:
+                    print("Loading")
+                    todoSubscription()
+                case .failure(let error):
+                    if error is TodoError {
+                        appError = ErrorType(error: error as! TodoError)
+                    } else {
+                        appError = ErrorType(error: TodoError.decordingError)
+                        todoSubscription()
+                    }
+                }
+                
+            } receiveValue:  {(todos) in
+                self.todos = todos
+            }
+            .store(in: &subscriptions)
+        
         addTodo
             .sink{ [unowned self] todo in
                 todos.append(todo)
-                saveTodos()
+                
             }
             .store(in: &subscriptions)
         
@@ -40,37 +62,47 @@ class DataStore: ObservableObject {
                 guard let index = todos.firstIndex(where: {
                     $0.id == todo.id }) else {return}
                 todos[index] = todo
-                saveTodos()
+                
             }
             .store(in: &subscriptions)
         
         daleteTodo
             .sink{ [unowned self] indexSet in
                 todos.remove(atOffsets: indexSet)
-                saveTodos()
+                
             }
             .store(in: &subscriptions)
     }
     
-    
-//    func addTodo(_ todo: Todo) {
-//        todos.append(todo)
-//        saveTodos()
-//    }
-//
-//    func updateTodo(_ todo: Todo) {
-//        guard let index = todos.firstIndex(where: { $0.id == todo.id}) else {return}
-//        todos[index] = todo
-//        saveTodos()
-//    }
-//
-//    func deleteTodo(at indexSet: IndexSet){
-//        todos.remove(atOffsets: indexSet)
-//        saveTodos()
-//    }
+    func todoSubscription(){
+        $todos
+            .subscribe(on: DispatchQueue(label: "background queue"))
+            .receive(on: DispatchQueue.main)
+            .dropFirst()
+            .encode(encoder: JSONEncoder())
+            .tryMap{ data in
+                try data.write(to: FileManager.docDirURL.appendingPathComponent(fileName))
+            }
+            .sink{ [unowned self] (completion) in
+                switch completion {
+                case .finished:
+                    print("Saving Completed")
+                case .failure(let error):
+                    if error is TodoError {
+                        appError = ErrorType(error: error as! TodoError)
+                    } else {
+                        appError = ErrorType(error: TodoError.encordingError)
+                    }
+                }
+                
+            } receiveValue: { _ in
+                print("Saving file was successful")
+            }
+            .store(in: &subscriptions)
+        
+    }
     
     func loadTodo(){
-        //        todos = Todo.sampleData
         FileManager().readDocument(docName: fileName){ (result) in
             switch result{
             case .success(let data):
@@ -78,33 +110,12 @@ class DataStore: ObservableObject {
                 do {
                     todos = try decoder.decode([Todo].self, from: data)
                 } catch {
-                    // print(TodoError.decordingError.localizedDescription)
                     appError = ErrorType(error: .decordingError)
                 }
             case .failure(let error):
-                // print(error.localizedDescription)
                 appError = ErrorType(error: error)
             }
             
-        }
-    }
-    
-    func saveTodos(){
-        print("Saving todos")
-        let encoder = JSONEncoder()
-        do{
-            let data = try encoder.encode(todos)
-            let jsonString = String(decoding: data, as: UTF8.self)
-            FileManager().saveDocument(contents: jsonString, docName: fileName){ (error) in
-                if let error = error {
-                    //print(error.localizedDescription)
-                    
-                    appError = ErrorType(error: error)
-                }
-            }
-        } catch {
-            // print(TodoError.encordingError.localizedDescription)
-            appError = ErrorType(error: .encordingError)
         }
     }
 }
