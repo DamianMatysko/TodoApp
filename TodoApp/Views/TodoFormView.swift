@@ -9,20 +9,45 @@ import SwiftUI
 
 struct TodoFormView: View {
     @EnvironmentObject var dataStore:DataStore
-    @ObservedObject var formVM: TodoFormViewModel
-    @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var formVM: TodoFormViewModel//TODO: not working keyboard
+    enum Field {//TODO: not working keyboard
+        case todo
+    }
+    @Environment(\.dismiss) var dismiss
+    @FocusState private var focusedField:Field?
     
     var body: some View {
         NavigationView{
-            Form{
-                VStack(alignment: .leading){
-                    TextField("Todo", text: $formVM.name)
-                    Toggle("Completed", isOn: $formVM.completed)
+            
+            VStack(alignment: .leading){
+                TextField("Todo", text: $formVM.name)
+                    .focused($focusedField, equals: .todo)//TODO: not working keyboard
+                Toggle("Completed", isOn: $formVM.completed)
+                Spacer()//TODO: not working keyboard
+            }
+            .padding()//TODO: not working keyboard
+            .task {//TODO: not working keyboard
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                    focusedField = .todo
                 }
             }
+            
+            
             .navigationTitle("Todo")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: cancelButton, trailing: updateSaaveButton)
+            .toolbar{ //TODO: not working keyboard
+                ToolbarItemGroup(placement: .keyboard){
+                    HStack{
+                        Spacer()
+                        Button{
+                            focusedField = nil
+                        } label: {
+                            Image(systemName: "keyboard.chevron.compact.down")
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -31,19 +56,18 @@ extension TodoFormView{
     func updateTodo() {
         let todo = Todo(id: formVM.id!, name: formVM.name, completed: formVM.completed)
         dataStore.updateTodo.send(todo)
-        presentationMode.wrappedValue.dismiss()
+        dismiss()
     }
     
     func addTodo(){
         let todo = Todo(name: formVM.name)
         dataStore.addTodo.send(todo)
-        presentationMode.wrappedValue.dismiss()
+        dismiss()
     }
     
     var cancelButton: some View{
         Button("Cancel") {
-            
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         }
     }
     

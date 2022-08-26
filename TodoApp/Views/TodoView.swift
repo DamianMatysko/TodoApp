@@ -16,7 +16,7 @@ struct TodoView: View {
     var body: some View {
         NavigationView{
             List(){
-                ForEach(dataStore.todos){ todo in
+                ForEach(dataStore.todos.value){ todo in
                     Button(action: {
                         modalType = .update(todo)
                     }, label: {
@@ -28,7 +28,7 @@ struct TodoView: View {
                 }
                 .onDelete(perform: dataStore.daleteTodo.send)
             }
-            .listStyle(InsetGroupedListStyle())
+            .listStyle(.insetGrouped)
             .toolbar{
                 ToolbarItem(placement: .principal){
                     Text("My Todos")
@@ -45,7 +45,7 @@ struct TodoView: View {
             }
         }
         .sheet(item: $modalType) { $0 }
-        .alert(item: $dataStore.appError){ appError in
+        .alert(item: $dataStore.appError.value){ appError in
             Alert(title: Text("Oh no"), message: Text(appError.error.localizedDescription))
         }
     }

@@ -9,21 +9,58 @@ import Foundation
 import Combine
 
 class DataStore: ObservableObject {
-    @Published var todos:[Todo] = []
-    @Published var appError: ErrorType? = nil
-    
+    var todos = CurrentValueSubject<[Todo], Never>([])
+    var appError = CurrentValueSubject<ErrorType?, Never>(nil)
     var addTodo = PassthroughSubject<Todo, Never>()
     var updateTodo = PassthroughSubject<Todo, Never>()
     var daleteTodo = PassthroughSubject<IndexSet, Never>()
     var loadTodos = Just(FileManager.docDirURL.appendingPathComponent(fileName))
     var subscriptions = Set<AnyCancellable>()
     
+    
+    var cancellable: Set<AnyCancellable> = [] //TODO: same variable as subscriptions
+    var api: TodoAPI = TodoAPI()
+//    @Published var todosAPI: Loadable<TodoResponse> = .notLoaded
+    
+    enum Loadable<Response>{
+        case notLoaded
+        case loaded(Response)
+        case failed(Error)
+    }
+    
     init(){
         print(FileManager.docDirURL.path)
         addSubscription()
-}
+        test()
+    }
+    
+    func test(){
+        api.fetchTodos()
+        //        .map({response in
+        //            return Loadable.loaded(response)
+        //        })
+            .subscribe(on: DispatchQueue.global())
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("We have data!")
+                case .failure(let weatherError):
+                    print("Something went wrong: \(weatherError.localizedDescription)")
+                }
+            } receiveValue: { response in
+            print(response)
+            }
+            .store(in: &cancellable)
+    }
     
     func addSubscription(){
+        appError
+            .sink{ _ in
+                self.objectWillChange.send()
+            }
+            .store(in: &subscriptions)
+        
         loadTodos
             .filter{FileManager.default.fileExists(atPath: $0.path)}
             .tryMap{ url in
@@ -38,44 +75,45 @@ class DataStore: ObservableObject {
                     todoSubscription()
                 case .failure(let error):
                     if error is TodoError {
-                        appError = ErrorType(error: error as! TodoError)
+                        appError.send(ErrorType(error: error as! TodoError))
                     } else {
-                        appError = ErrorType(error: TodoError.decordingError)
+                        appError.send(ErrorType(error: TodoError.decordingError))
                         todoSubscription()
                     }
                 }
                 
             } receiveValue:  {(todos) in
-                self.todos = todos
+                self.todos.value = todos
+                self.objectWillChange.send()
             }
             .store(in: &subscriptions)
         
         addTodo
             .sink{ [unowned self] todo in
-                todos.append(todo)
-                
+                todos.value.append(todo)
+                self.objectWillChange.send()
             }
             .store(in: &subscriptions)
         
         updateTodo
             .sink { [unowned self] todo in
-                guard let index = todos.firstIndex(where: {
+                guard let index = todos.value.firstIndex(where: {
                     $0.id == todo.id }) else {return}
-                todos[index] = todo
-                
+                todos.value[index] = todo
+                self.objectWillChange.send()
             }
             .store(in: &subscriptions)
         
         daleteTodo
             .sink{ [unowned self] indexSet in
-                todos.remove(atOffsets: indexSet)
-                
+                todos.value.remove(atOffsets: indexSet)
+                self.objectWillChange.send()
             }
             .store(in: &subscriptions)
     }
     
     func todoSubscription(){
-        $todos
+        todos
             .subscribe(on: DispatchQueue(label: "background queue"))
             .receive(on: DispatchQueue.main)
             .dropFirst()
@@ -89,9 +127,9 @@ class DataStore: ObservableObject {
                     print("Saving Completed")
                 case .failure(let error):
                     if error is TodoError {
-                        appError = ErrorType(error: error as! TodoError)
+                        appError.send(ErrorType(error: error as! TodoError))
                     } else {
-                        appError = ErrorType(error: TodoError.encordingError)
+                        appError.send(ErrorType(error: TodoError.encordingError))
                     }
                 }
                 
@@ -100,22 +138,15 @@ class DataStore: ObservableObject {
             }
             .store(in: &subscriptions)
         
+        //todosAPI TODO: subscription
+        
     }
     
-    func loadTodo(){
-        FileManager().readDocument(docName: fileName){ (result) in
-            switch result{
-            case .success(let data):
-                let decoder = JSONDecoder()
-                do {
-                    todos = try decoder.decode([Todo].self, from: data)
-                } catch {
-                    appError = ErrorType(error: .decordingError)
-                }
-            case .failure(let error):
-                appError = ErrorType(error: error)
-            }
-            
-        }
-    }
+    
+   
+
+    
+
+    
+    
 }

@@ -18,6 +18,9 @@ struct TodoAppApp: App {
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
 
             .environmentObject(DataStore())
+            .onAppear{
+                UserDefaults.standard.setValue(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
+            }
         }
     }
 }
