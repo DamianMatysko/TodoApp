@@ -17,7 +17,6 @@ class DataStore: ObservableObject {
     var loadTodos = Just(FileManager.docDirURL.appendingPathComponent(fileName))
     var subscriptions = Set<AnyCancellable>()
     
-    
     var cancellable: Set<AnyCancellable> = [] //TODO: same variable as subscriptions
     var api: TodoAPI = TodoAPI()
 //    @Published var todosAPI: Loadable<TodoResponse> = .notLoaded
@@ -31,14 +30,11 @@ class DataStore: ObservableObject {
     init(){
         print(FileManager.docDirURL.path)
         addSubscription()
-        test()
+        api.postTodo()
     }
     
     func test(){
         api.fetchTodos()
-        //        .map({response in
-        //            return Loadable.loaded(response)
-        //        })
             .subscribe(on: DispatchQueue.global())
             .receive(on: DispatchQueue.main)
             .sink { completion in

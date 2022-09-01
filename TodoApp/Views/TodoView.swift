@@ -33,13 +33,13 @@ struct TodoView: View {
                 ToolbarItem(placement: .principal){
                     Text("My Todos")
                         .font(.largeTitle)
-                        .foregroundColor(.red)
+                        .foregroundColor(.black)
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button{
                         modalType = .new
                     } label: {
-                        Image(systemName: "plus.circle.fill")
+                        Image(systemName: "plus")
                     }
                 }
             }

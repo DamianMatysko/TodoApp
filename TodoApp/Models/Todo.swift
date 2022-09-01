@@ -41,3 +41,24 @@ struct TodoResponseElement: Codable {
 }
 
 typealias TodoResponse = [TodoResponseElement]
+
+// This file was generated from JSON Schema using quicktype, do not modify it directly.
+// To parse the JSON, add this file to your project and do:
+//
+//   let todoRequest = try? newJSONDecoder().decode(TodoRequest.self, from: jsonData)
+
+import Foundation
+
+// MARK: - TodoRequestElement
+struct TodoRequestElement: Codable {
+    let name, todoRequestDescription: String
+    let expirationTime: String
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case todoRequestDescription = "description"
+        case expirationTime
+    }
+}
+
+typealias TodoRequest = [TodoRequestElement]
